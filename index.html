@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CBT Exam Portal – Nsam Technologies</title>
+<style>
+:root{--g:#22b24c;--gd:#178a3a;--ink:#1d2733;--mut:#6b7785;--bg:#eef0f3;--card:#fff;--red:#e11d48}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+.hide{display:none!important}
+button{font-family:inherit;cursor:pointer;border:0}
+/* ---------- LOGIN ---------- */
+#login{display:flex;min-height:100vh;background:#fff}
+.lp{width:340px;flex:none;padding:36px 28px;display:flex;flex-direction:column;align-items:center;text-align:center;background:#fff}
+.logo{width:62px;height:62px;border-radius:16px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.14);display:grid;place-items:center;margin-bottom:14px}
+.lp h1{font-size:15px;letter-spacing:.5px;color:var(--g);font-weight:800}
+.lp .addr{font-size:11.5px;font-weight:700;margin:6px 0 18px;line-height:1.45;color:#222}
+.lp .ua{font-size:12px;letter-spacing:1.4px;color:#d9334a;font-weight:700;margin-bottom:14px}
+.fld{position:relative;width:100%;margin-bottom:12px}
+.fld input{width:100%;height:38px;border:1px solid #d9e6dd;border-radius:8px;padding:0 38px 0 12px;font-size:13px;background:#fbfffc;outline:none;transition:.15s}
+.fld input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(34,178,76,.18)}
+.fld .ic{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:#2fc15c;font-size:14px;background:none;line-height:1}
+.btn{width:100%;height:40px;border-radius:8px;background:linear-gradient(#2fc15c,#1fa347);color:#fff;font-weight:700;font-size:13px;letter-spacing:.4px;box-shadow:0 4px 10px rgba(34,178,76,.3);transition:.15s}
+.btn:hover{filter:brightness(.94)}
+.btn:disabled{opacity:.6;cursor:wait}
+.err{width:100%;background:#fff1f2;color:#be123c;border:1px solid #fecdd3;border-radius:8px;font-size:12px;padding:8px 10px;margin-bottom:12px;text-align:left}
+.brand-tag{margin-top:16px;font-size:11px;color:#8a949f;line-height:1.6}
+.brand-tag b{color:#d9334a}
+.rp{flex:1;position:relative;overflow:hidden;color:#fff;display:flex;align-items:center;justify-content:center;
+background:radial-gradient(1200px 600px at 20% 10%,#0c4a3a 0%,#06212a 45%,#030a14 100%)}
+.rp canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero{position:relative;z-index:2;width:min(760px,88%);text-align:center}
+.badge{display:inline-block;font-size:10.5px;letter-spacing:1.4px;font-weight:700;color:#4ade80;border:1px solid rgba(74,222,128,.4);background:rgba(74,222,128,.1);padding:5px 14px;border-radius:99px;margin-bottom:18px}
+.hero h2{font-size:clamp(28px,4vw,44px);font-weight:800;letter-spacing:-.5px}
+.hero h2 span{color:#4ade80}
+.typed{margin:22px auto 22px;border:1px solid rgba(255,255,255,.12);border-top:2px solid #4ade80;background:rgba(255,255,255,.05);border-radius:10px;padding:16px 20px;font-style:italic;font-size:13.5px;color:#d3e4dc;min-height:54px;backdrop-filter:blur(4px)}
+.typed::after{content:"|";margin-left:2px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px 6px}
+.stat b{display:block;font-size:22px;color:#4ade80}
+.stat small{font-size:10px;letter-spacing:1px;color:#9db3aa}
+.feats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;text-align:left}
+.feat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:11px;font-size:11px}
+.feat b{display:block;font-size:11.5px;margin-bottom:3px}
+.feat span{color:#9db3aa;font-size:10.5px;line-height:1.35;display:block}
+.pw{margin-top:24px;font-size:11px;color:#6f877d}
+@media(max-width:860px){
+ #login{flex-direction:column}.lp{width:100%;padding:28px 22px 18px}
+ .rp{min-height:420px;padding:28px 0}.stats,.feats{grid-template-columns:repeat(2,1fr)}
+}
+/* ---------- TOP NAV ---------- */
+nav{height:46px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 18px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.brand{font-weight:800;color:#1b8bd1;font-size:15px;line-height:1}
+.brand small{display:block;font-size:8px;color:#8a949f;font-weight:600;letter-spacing:.8px}
+.nl{display:flex;align-items:center;gap:6px;font-size:12px}
+.nl a{padding:5px 10px;border-radius:6px;color:#4b5563;cursor:pointer}
+.nl a.on{background:#eef2f6;font-weight:600}
+.nl .lo{background:var(--red);color:#fff;border-radius:6px;padding:5px 12px;font-weight:600}
+.who{font-size:11px;text-align:right;line-height:1.2;margin-left:8px}
+.who small{color:var(--mut);display:block}
+.pagehead{text-align:center;margin:26px 12px 0}
+.pagehead h1{font-size:clamp(20px,3vw,26px);color:var(--g);font-weight:800}
+.pagehead p{font-size:12px;color:var(--mut);margin-top:3px}
+.pagehead h3{font-size:19px;color:var(--g);font-weight:800;margin-top:18px}
+/* ---------- DASHBOARD ---------- */
+.dash{max-width:960px;margin:6px auto 40px;padding:0 14px;display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:2px solid #2cb5a8;background:#fff;padding:12px;border-radius:4px;box-shadow:0 1px 6px rgba(0,0,0,.08)}
+@media(max-width:700px){.dash{grid-template-columns:1fr}}
+.prof{text-align:center;font-size:12px}
+.av{width:44px;height:44px;border-radius:50%;margin:2px auto 3px;background:#ffe9cf;border:2px solid #f5b062;display:grid;place-items:center;font-size:22px}
+.sn{font-size:10px;color:var(--mut);margin-bottom:12px}
+.row{display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px solid #f0f2f4;font-size:11.5px}
+.row b{font-weight:600}.row span{color:#6b7785;text-align:right}
+.tiles{display:flex;flex-direction:column;gap:7px}
+.tile{display:flex;align-items:center;gap:10px;color:#fff;font-weight:600;font-size:12.5px;padding:12px 14px;border-radius:5px;text-align:left}
+.t1{background:#2de197}.t2{background:#7230c6}.t3{background:#22a9b3}.t4{background:#e0258b}
+.tile:hover{filter:brightness(.93)}
+/* ---------- EXAM LIST ---------- */
+.exlist{max-width:960px;margin:18px auto;padding:0 14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.exc{background:#fff;border-radius:6px;padding:12px 14px;cursor:pointer;display:flex;gap:10px;font-size:12px;color:#0b5aa6;box-shadow:0 1px 4px rgba(0,0,0,.07);border:1px solid transparent;text-align:left;transition:.12s}
+.exc:hover{border-color:#9cc9ee;transform:translateY(-1px)}
+.exc .l{font-size:15px}
+.exc b{display:block;font-size:12.5px;margin-bottom:2px}
+.exc em{font-style:normal;display:block;font-weight:600;font-size:11px}
+.exc .day{color:#6b7785;font-weight:500}
+/* ---------- MODAL ---------- */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding-top:90px;z-index:50}
+.md{background:#fff;width:min(340px,92%);border-radius:5px;padding:14px 16px 16px;box-shadow:0 10px 30px rgba(0,0,0,.3);position:relative}
+.md h4{font-size:12px;color:var(--g);font-weight:700;margin-bottom:12px;padding-right:20px}
+.md h4 b{color:#333}
+.md label{font-size:11px;font-weight:600;display:block;margin-bottom:4px}
+.md input{width:100%;height:32px;border:1px solid #d5dbe1;border-radius:4px;padding:0 10px;font-size:13px;letter-spacing:3px;outline:none}
+.md input:focus{border-color:var(--g)}
+.x{position:absolute;right:10px;top:10px;background:#dc2626;color:#fff;width:18px;height:18px;border-radius:3px;font-size:11px;line-height:18px}
+.md .go{float:right;margin-top:12px;background:var(--g);color:#fff;font-size:12px;font-weight:600;padding:7px 14px;border-radius:4px}
+.merr{color:#be123c;font-size:11px;margin-top:6px;min-height:14px}
+/* ---------- EXAM ROOM ---------- */
+#room{background:#f3f5f8;min-height:100vh}
+.rh{background:#fff;display:flex;align-items:center;gap:12px;padding:8px 18px;box-shadow:0 1px 4px rgba(0,0,0,.08);flex-wrap:wrap}
+.rh .nm{font-weight:700;font-size:13px}.rh .nm small{display:block;color:var(--mut);font-weight:500;font-size:10.5px}
+.cnt{display:flex;gap:14px;margin-left:auto;align-items:center}
+.cb{text-align:center;font-size:9px;color:var(--mut);letter-spacing:.8px}.cb b{display:block;font-size:14px;color:#2b3a67}
+.sub{background:#e11d48;color:#fff;font-weight:700;font-size:11px;padding:8px 14px;border-radius:99px}
+.timer{background:linear-gradient(#4f46e5,#3b37c4);color:#fff;font-weight:700;font-size:15px;padding:7px 15px;border-radius:99px;font-variant-numeric:tabular-nums}
+.timer.low{background:#dc2626}
+.lo2{background:#e11d48;color:#fff;font-weight:700;font-size:11px;padding:8px 12px;border-radius:99px}
+.rb{display:grid;grid-template-columns:1fr 190px;gap:16px;max-width:1150px;margin:16px auto;padding:0 14px}
+@media(max-width:760px){.rb{grid-template-columns:1fr}}
+.qc{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 5px rgba(0,0,0,.07)}
+.qn{display:inline-block;background:#3b6cc4;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:99px;margin-bottom:14px}
+.qt{font-size:14.5px;margin-bottom:16px;line-height:1.5}
+.opt{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:#fafbfc;border:1px solid #eceff3;border-left:3px solid #c53d8a;border-radius:6px;padding:10px 12px;margin-bottom:8px;font-size:13px;transition:.12s}
+.opt:nth-child(3){border-left-color:#7c3aed}.opt:nth-child(4){border-left-color:#0ea5e9}.opt:nth-child(5){border-left-color:#14b8a6}
+.opt b{font-size:11px;color:#6b7785}
+.opt:hover{background:#f1f6ff}
+.opt.sel{background:#e7f6ec;border-color:#34b35f;border-left-color:#34b35f}
+.nv{display:flex;justify-content:space-between;margin-top:16px}
+.nv button{padding:8px 18px;border-radius:6px;font-weight:600;font-size:12px;color:#fff}
+.pv{background:#6b7280}.nx{background:var(--g)}
+.hint{text-align:center;font-size:10.5px;color:var(--mut);margin-top:14px}
+.qnav{background:#fff;border-radius:10px;padding:12px;box-shadow:0 1px 5px rgba(0,0,0,.07);align-self:start}
+.qnav h5{font-size:11px;color:#3b6cc4;margin-bottom:10px}
+.dots{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.dot{width:26px;height:26px;border-radius:50%;background:#e11d48;color:#fff;font-size:10px;font-weight:700}
+.dot.ans{background:#22b24c}.dot.cur{outline:3px solid #3b6cc4;outline-offset:1px}
+.banner{background:#fff7e0;border-bottom:1px solid #f3dc9a;color:#8a6200;font-size:11px;text-align:center;padding:5px}
+.ok{font-size:44px;text-align:center}
+.res{text-align:center;font-size:12.5px;line-height:1.7}
+.res b{font-size:20px;color:var(--g)}
+/* ---------- RESULT REVIEW ---------- */
+#rev{background:#f3f5f8;min-height:100vh;padding-bottom:30px}
+.revw{max-width:860px;margin:0 auto;padding:0 14px}
+.revh{background:#fff;border-radius:10px;padding:18px 20px;margin:16px 0;box-shadow:0 1px 5px rgba(0,0,0,.07);text-align:center}
+.revh h2{font-size:18px;color:var(--g)}
+.revh .big{font-size:30px;font-weight:800;color:#2b3a67;margin:8px 0 2px}
+.revh .sm{font-size:12px;color:var(--mut);line-height:1.6}
+.revh button{margin-top:12px;background:var(--g);color:#fff;font-weight:600;font-size:12px;padding:9px 18px;border-radius:6px}
+.rvc{background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:12px;box-shadow:0 1px 5px rgba(0,0,0,.07);border-left:4px solid #9ca3af}
+.rvc.good{border-left-color:#22b24c}.rvc.bad{border-left-color:#e11d48}
+.rvc .st{font-size:11px;font-weight:700;margin-bottom:6px}
+.rvc.good .st{color:#178a3a}.rvc.bad .st{color:#be123c}.rvc.skip .st{color:#6b7280}
+.rvc .rq{font-size:13.5px;line-height:1.5;margin-bottom:10px}
+.ro{font-size:12.5px;padding:7px 10px;border-radius:6px;margin-bottom:5px;background:#fafbfc;border:1px solid #eceff3;line-height:1.4}
+.ro.cor{background:#e7f6ec;border-color:#34b35f}.ro.wr{background:#fff1f2;border-color:#fecdd3}
+.ro i{font-style:normal;font-weight:700;font-size:10.5px;margin-left:6px}
+.why{background:#f6f8fb;border-radius:6px;padding:9px 11px;font-size:12px;margin-top:8px;line-height:1.55;color:#2d3748}
+
+a.btn{display:flex;align-items:center;justify-content:center;text-decoration:none}
+#wa{width:100%;margin-bottom:12px;text-align:left}
+.dots{max-height:62vh;overflow:auto;padding:2px}
+.dot{border:0}
+#admin{min-height:100vh;background:var(--bg);padding-bottom:30px}
+.ac{background:#fff;max-width:900px;margin:14px auto;padding:16px 18px;border-radius:10px;box-shadow:0 1px 5px rgba(0,0,0,.07)}
+.ac h2{font-size:15px;color:var(--g);margin-bottom:10px}
+.ac input[type=text],.ac input[type=email],.ac input[type=password],.ac textarea{width:100%;border:1px solid #d9e6dd;border-radius:8px;padding:10px 12px;font-size:13px;margin:5px 0;outline:none;background:#fbfffc;font-family:inherit}
+.ac input:focus,.ac textarea:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(34,178,76,.18)}
+.ab{background:linear-gradient(#2fc15c,#1fa347);color:#fff;font-weight:700;font-size:12px;padding:9px 14px;border-radius:8px}
+.ab.s{background:#e6ebf2;color:var(--ink)}
+.atop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:8px 0;flex-wrap:wrap}
+.astats{display:flex;gap:8px;flex-wrap:wrap}.astats div{flex:1;min-width:90px;background:#f1f5f2;padding:9px;border-radius:8px;text-align:center;font-size:11px;color:var(--mut)}.astats b{display:block;font-size:20px;color:var(--g)}
+.pcard{border:1px solid #e6ebf0;border-radius:8px;padding:10px 12px;margin:8px 0;display:grid;gap:6px;font-size:12px;color:var(--mut)}.pcard b{color:var(--ink);font-size:13px}
+.arow{border:1px solid #e6ebf0;border-radius:8px;margin:8px 0}
+.arow summary{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;list-style:none}
+.arow small{display:block;color:var(--mut);font-size:11px}.asm{font-size:11px;color:var(--mut)}
+.adt{padding:0 12px 10px;font-size:12px}.adt table{width:100%;border-collapse:collapse}.adt td,.adt th{border-bottom:1px solid #eef1f4;padding:5px;text-align:left}
+.sw input{display:none}.sw i{display:block;width:44px;height:24px;border-radius:12px;background:#c5ccd6;position:relative}.sw i:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.15s}.sw input:checked+i{background:var(--g)}.sw input:checked+i:after{left:23px}
+
+.ann{max-width:960px;margin:10px auto 0;background:#fff7e0;border:1px solid #f3dc9a;color:#8a6200;font-size:12.5px;padding:9px 14px;border-radius:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}.chip{background:#e11d48;color:#fff;border-radius:99px;min-width:30px;height:26px;font-size:11px;font-weight:700;padding:0 8px}
+.fl{background:#f59e0b}.dot.flg{box-shadow:0 0 0 2px #f59e0b}
+.tg{display:flex;gap:8px;justify-content:center}.revh .tg button{background:#e5e7eb;color:#1d2733}.revh .tg button.on{background:var(--g);color:#fff}
+#toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:#1d2733;color:#fff;font-size:13px;font-weight:600;padding:10px 18px;border-radius:99px;z-index:99;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.at{width:100%;border-collapse:collapse;font-size:12px;background:#fff}.at td,.at th{border-bottom:1px solid #eef1f4;padding:7px 8px;text-align:left}
+#ov3 .md{width:min(380px,92%);max-height:80vh;overflow:auto}#ov3 h3{font-size:15px;margin-bottom:8px}#ov3 p{font-size:12.5px;margin-top:6px}
+</style>
+</head>
+<body>
+
+
+<!-- LOGIN -->
+<section id="login">
+  <aside class="lp">
+    <div class="logo"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#3b82c4" stroke-width="1.6" stroke-linecap="round"><path d="M12 3v18M7 6c-3 0-4 4-2 6-2 2-1 6 2 6M17 6c3 0 4 4 2 6 2 2 1 6-2 6"/><circle cx="12" cy="8" r="1.4"/><circle cx="12" cy="16" r="1.4"/></svg></div>
+    <h1>NMCN CBT PRACTICE</h1>
+    <div class="addr">EXAM PREPARATION PORTAL</div>
+    <div class="ua">STUDENT LOGIN</div>
+    <div id="lerr" class="err hide"></div>
+    <div class="fld"><input id="u" placeholder="Enter username" autocomplete="off" autocapitalize="characters" spellcheck="false"><span class="ic">👤</span></div>
+    <div class="fld"><input id="p" type="password" placeholder="Enter password" autocomplete="off" autocapitalize="characters"><button class="ic" id="eye" type="button" aria-label="Show password">👁</button></div>
+    <button class="btn" id="signin">➜&nbsp; SIGN IN</button>
+    <div id="wa" class="hide"></div><div class="brand-tag"><b>NSAM TECHNOLOGIES</b><br>Log in with the username and password on your slip, then enter the PIN for the paper you are writing.</div>
+  </aside>
+  <main class="rp">
+    <canvas id="cv"></canvas>
+    <div class="hero">
+      <div class="badge">● STRESS-FREE EXAM LOGIN</div>
+      <h2>NMCN Exam <span>Practice Portal</span></h2>
+      <div class="typed" id="typed"></div>
+      <div class="stats">
+        <div class="stat"><b>94</b><small>STUDENTS</small></div>
+        <div class="stat"><b>3</b><small>PAPERS</small></div>
+        <div class="stat"><b>250</b><small>QUESTIONS EACH</small></div>
+        <div class="stat"><b>3 HRS</b><small>PER PAPER</small></div>
+      </div>
+      <div class="feats">
+        <div class="feat"><b>Username format</b><span>Looks like DOM/3Y1S/05</span></div>
+        <div class="feat"><b>3-letter password</b><span>Check your slip, case doesn’t matter</span></div>
+        <div class="feat"><b>Paper PIN</b><span>Each paper has its own PIN</span></div>
+        <div class="feat"><b>Works on phones</b><span>Your answers are saved as you go</span></div>
+      </div>
+      <div class="pw">Built by Nsam Technologies · for St Camillus College of Nursing Sciences</div>
+    </div>
+  </main>
+</section>
+
+<!-- DASHBOARD / EXAM LIST -->
+<section id="app" class="hide">
+  <nav>
+    <div class="brand">Nsam Technologies<small>CBT SYSTEM</small></div>
+    <div class="nl">
+      <a id="nDash" class="on">Dashboard</a><a id="nExam">Examination</a><a class="lo" id="logout">Logout</a>
+      <div class="who"><b id="wId"></b><small>Student</small></div>
+    </div>
+  </nav>
+  <div id="ann" class="ann hide"></div>
+  <div id="vDash">
+    <div class="pagehead"><h1>CBT EXAMINATION SYSTEM</h1><p>EXAM PREPARATION PORTAL · Nsam Technologies</p><h3>STUDENT DASHBOARD</h3></div>
+    <div class="dash">
+      <div class="prof"><div class="av">🧑‍⚕️</div><div class="sn" id="pId"></div>
+        <div class="row"><b>Name:</b><span id="pN"></span></div>
+        <div class="row"><b>Username:</b><span id="pU"></span></div>
+        <div class="row"><b>Exam:</b><span>NMCN practice papers</span></div>
+      </div>
+      <div class="tiles">
+        <button class="tile t1" id="goObj">☑&nbsp; Objective Questions</button>
+        <button class="tile t2" data-na>📖&nbsp; Theory Questions</button>
+        <button class="tile t3" data-na>☁&nbsp; Past Questions</button>
+        <button class="tile t4" id="goRes">🏆&nbsp; Check Result</button>
+      </div>
+    </div>
+  </div>
+  <div id="vRes" class="hide"><div class="pagehead"><h3 style="margin-top:0">MY RESULTS</h3><p>Your past attempts on this portal.</p></div><div style="max-width:760px;margin:14px auto;padding:0 14px" id="reslist"></div></div>
+  <div id="vList" class="hide">
+    <div class="pagehead"><h3 style="margin-top:0">OBJECTIVE EXAMINATION</h3><p>Choose your paper and enter its PIN.</p></div>
+    <div class="exlist" id="exlist"></div>
+  </div>
+</section>
+
+<!-- PIN MODAL -->
+<div class="ov hide" id="ov"><div class="md">
+  <button class="x" id="mx">X</button>
+  <h4>Take <b id="mc"></b> Examination Question</h4>
+  <label for="pin">Enter Examination PIN</label>
+  <input id="pin" inputmode="numeric" maxlength="4" placeholder="Exam PIN e.g 0000" autocomplete="off">
+  <div class="merr" id="merr"></div>
+  <button class="go" id="mgo">Proceed to Exam Room</button>
+  <div style="clear:both"></div>
+</div></div>
+
+<!-- EXAM ROOM -->
+<section id="room" class="hide">
+  <div class="banner">Nsam Technologies · NMCN practice exam room</div>
+  <div class="rh">
+    <div class="nm" id="rName"></div>
+    <div class="cnt">
+      <div class="cb">ANSWERED<b id="cA">0</b></div><div class="cb">REMAINING<b id="cR">5</b></div><div class="cb">TOTAL<b id="cT">5</b></div>
+      <button class="sub" id="submit">Submit</button>
+      <div class="timer" id="tm">03:00:00</div>
+      
+    </div>
+  </div>
+  <div class="rb">
+    <div class="qc">
+      <span class="qn" id="qn"></span>
+      <div class="qt" id="qt"></div>
+      <div id="opts"></div>
+      <div class="nv"><button class="pv" id="pv">‹ Previous</button><button class="fl" id="flag">⚑ Flag</button><button class="nx" id="nx">Next ›</button></div>
+      <div class="hint">Keys: A–D select · P previous · N next</div>
+    </div>
+    <div class="qnav"><h5>Quick Navigator</h5><div class="dots" id="dots"></div></div>
+  </div>
+</section>
+
+<!-- RESULT REVIEW -->
+<section id="rev" class="hide"><div class="revw">
+  <div class="revh"><h2 id="revT"></h2><div class="big" id="revS"></div><div class="sm" id="revI"></div><div class="tg"><button id="tgA" class="on">All questions</button><button id="tgM">Missed only</button></div><button id="revRetry" class="hide" style="background:#f59e0b">Retry saving my result</button><br><button id="revBack">Back to exam list</button></div>
+  <div id="revL"></div>
+</div></section>
+
+<div class="ov hide" id="ov3"><div class="md"><div id="ov3b"></div><div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end"><button class="go" style="float:none;margin:0;background:#6b7280" id="ov3k">Keep working</button><button class="go" style="float:none;margin:0" id="ov3s">Submit now</button></div></div></div>
+<div id="toast" class="hide"></div>
+<div class="ov hide" id="ov2"><div class="md" style="padding:22px 20px;text-align:center">
+  <div id="ov2b"></div>
+  <button class="go" style="float:none;margin-top:14px" id="ov2c">OK</button>
+</div></div>
+
+
+<section id="admin" class="hide"></section>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="bank.js"></script>
+<script>
+const FB={apiKey:"AIzaSyBPJUYDeCqBjrOLKToqacNEyy0-IMzBkBA",authDomain:"n-sam-nmcn-cbt-quest.firebaseapp.com",projectId:"n-sam-nmcn-cbt-quest",storageBucket:"n-sam-nmcn-cbt-quest.firebasestorage.app",messagingSenderId:"903051215543",appId:"1:903051215543:web:8497b2bb0ded6da6710332"};
+const WA="2347081064223",TOTAL=250,SECS=10800,L=["A","B","C","D"];
+const PAPERS=[{k:"paper1",n:"Paper I",h:"47f52ca3a53d0967c01fb92e717540d1ccf152583ce63b7345156fe519607876"},{k:"paper2",n:"Paper II",h:"705b37245c47bf852ad7c0b06a0a5e0e0e7518b769e757d725ad0b6c6653c0e2"},{k:"paper3",n:"Paper III",h:"d7fac0d22a1bfcc016b49431b2fe85707ae057af8956a044e88a484c2db36ba3"}];
+const BANK=window.BANK||{};
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const key=u=>u.trim().toUpperCase().replace(/\//g,"_");
+const sha=async s=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,"0")).join("");
+const hp=(u,p)=>sha(key(u)+"|"+p.trim().toUpperCase());
+const rng=s=>{let a=s>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
+const seedOf=s=>{let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0};
+const shuffle=(x,r=Math.random)=>{const a=[...x];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const waLink=u=>"https://wa.me/"+WA+"?text="+encodeURIComponent("Hello Admin N Sam, please activate my CBT account. Username: "+u);
+const fmt=t=>t&&t.toDate?t.toDate().toLocaleString():"-";
+let db,auth,me=null,S=null,tmr=null,A={},paper=null,ST={},REV=null,RS=[];
+/* background particles */
+(function(){const c=$("cv"),x=c.getContext("2d");let w,h,P=[];
+ function rs(){w=c.width=c.offsetWidth;h=c.height=c.offsetHeight;P=Array.from({length:Math.round(w*h/9000)},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}))}
+ function f(){x.clearRect(0,0,w,h);for(const p of P){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;x.fillStyle="rgba(74,222,128,.7)";x.beginPath();x.arc(p.x,p.y,1.4,0,6.3);x.fill()}
+  for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){const dx=P[i].x-P[j].x,dy=P[i].y-P[j].y,d=dx*dx+dy*dy;if(d<9000){x.strokeStyle="rgba(74,222,128,"+(.16*(1-d/9000))+")";x.beginPath();x.moveTo(P[i].x,P[i].y);x.lineTo(P[j].x,P[j].y);x.stroke()}}
+  requestAnimationFrame(f)}
+ addEventListener("resize",rs);rs();f()})();
+
+/* typed tagline */
+(function(){const L=["Log in early so exam day is calm.","Username, password, then the PIN for the day.","Know your exam day. Know your PIN.","Practise here, relax in the exam hall."];let i=0,j=0,del=false;const el=$("typed");
+ (function t(){const s=L[i];el.textContent=s.slice(0,j);if(!del&&j<s.length){j++;setTimeout(t,45)}else if(!del){del=true;setTimeout(t,1600)}else if(j>0){j--;setTimeout(t,22)}else{del=false;i=(i+1)%L.length;setTimeout(t,300)}})()})();
+
+
+const show=v=>["login","app","room","rev","admin"].forEach(s=>$(s).classList.toggle("hide",s!==v));
+const view=v=>{$("vRes").classList.toggle("hide",v!=="res");$("vDash").classList.toggle("hide",v!=="dash");$("vList").classList.toggle("hide",v!=="list");$("nDash").classList.toggle("on",v==="dash");$("nExam").classList.toggle("on",v==="list")};
+const msg=h=>{$("ov2b").innerHTML=h;$("ov2").classList.remove("hide");$("ov2c").onclick=()=>$("ov2").classList.add("hide")};
+const clearSession=()=>{localStorage.removeItem("cbt_u");localStorage.removeItem("cbt_s");me=null;S=null};
+function init(){
+ firebase.initializeApp(FB);db=firebase.firestore();auth=firebase.auth();
+ auth.onAuthStateChanged(u=>{if(location.hash==="#admin")u?dash():adminLogin()});
+ addEventListener("hashchange",route);route();
+}
+function route(){
+ clearInterval(tmr);
+ if(location.hash==="#admin"){show("admin");return auth.currentUser?dash():adminLogin()}
+ const u=localStorage.cbt_u;if(!u)return show("login");
+ me=JSON.parse(u);const s=localStorage.cbt_s;
+ if(s){S=JSON.parse(s);if(!S.m){localStorage.removeItem("cbt_s");S=null;return enter()}return room()}
+ enter();
+}
+/* ---------- login ---------- */
+$("eye").onclick=()=>{const p=$("p");p.type=p.type==="password"?"text":"password"};
+["u","p"].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));
+$("signin").onclick=doLogin;
+function showErr(m){const e=$("lerr");e.textContent=m;e.classList.remove("hide")}
+function inactive(u,n){
+ showErr("Your account is awaiting activation. Please contact the administrator.");
+ const w=$("wa");w.classList.remove("hide");
+ w.innerHTML='<p style="font-size:12px;font-weight:700;margin-bottom:10px">Contact Platform Support – Nsam Technologies on WhatsApp - +2347081064223</p><a class="btn" href="'+waLink(u)+'" target="_blank" rel="noopener">Chat with Admin on WhatsApp</a>';
+}
+async function doLogin(){
+ const btn=$("signin");$("lerr").classList.add("hide");$("wa").classList.add("hide");
+ const u=$("u").value.trim(),pw=$("p").value;
+ if(!u||!pw)return showErr("Please enter your username and password.");
+ btn.disabled=true;btn.textContent="Signing in…";
+ try{
+  const d=await db.collection("students").doc(key(u)).get(),s=d.data();
+  if(!d.exists||s.h!==await hp(u,pw))showErr("Invalid username or password.");
+  else if(!s.active)inactive(s.username,s.name);
+  else{me={k:key(u),u:s.username,n:s.name};localStorage.cbt_u=JSON.stringify(me);
+   db.collection("logins").add({k:me.k,u:me.u,n:me.n,at:firebase.firestore.FieldValue.serverTimestamp()});enter()}
+ }catch(e){showErr("Network problem. Check your internet and try again.")}
+ btn.disabled=false;btn.innerHTML="➜&nbsp; SIGN IN";
+}
+/* ---------- dashboard / papers ---------- */
+function enter(){
+ show("app");view("list");$("wId").textContent=me.u;$("pId").textContent=me.u;$("pN").textContent=me.n;$("pU").textContent=me.u;
+ const cards=()=>$("exlist").innerHTML=PAPERS.map(p=>'<button class="exc" data-k="'+p.k+'"><span class="l">🔓</span><span><b>'+p.n+'</b><em>Duration: '+dl(p.k)+'</em><em>No of Question: '+TOTAL+'</em></span></button>').join("");
+ cards();$("exlist").onclick=e=>{const b=e.target.closest(".exc");if(b)openPin(b.dataset.k)};
+ loadSet().then(()=>{cards();paintAnn()});retryPending();
+}
+$("nDash").onclick=()=>view("dash");$("nExam").onclick=()=>view("list");$("goObj").onclick=()=>view("list");
+$("logout").onclick=()=>{clearSession();$("u").value="";$("p").value="";show("login")};
+document.querySelectorAll("[data-na]").forEach(b=>b.onclick=()=>msg("<div class='ok'>ℹ️</div><p style='margin-top:8px;font-size:13px'>This section is not available yet. Use <b>Objective Questions</b> to take your paper.</p>"));
+function openPin(k){paper=PAPERS.find(p=>p.k===k);$("mc").textContent=paper.n;$("pin").value="";$("merr").textContent="";$("ov").classList.remove("hide");$("pin").focus()}
+$("mx").onclick=()=>$("ov").classList.add("hide");
+$("pin").addEventListener("keydown",e=>{if(e.key==="Enter")goPin()});
+$("mgo").onclick=goPin;
+const dl=k=>{const m=(ST.dur||{})[k]||SECS/60;return m%60?m+" mins":m/60+(m===60?" hour":" hours")};
+const toast=t=>{const e=$("toast");e.textContent=t;e.classList.remove("hide");setTimeout(()=>e.classList.add("hide"),5000)};
+async function loadSet(){try{const d=await db.collection("settings").doc("main").get();ST=d.exists?d.data():{}}catch(e){}return ST}
+const paintAnn=()=>{$("ann").textContent="📢 "+(ST.banner||"");$("ann").classList.toggle("hide",!ST.banner)};
+async function goPin(){
+ const m=$("merr"),k=paper.k;
+ if(!$("pin").value.trim())return m.textContent="Please enter the PIN.";
+ $("mgo").disabled=true;
+ try{
+  const [st,,qd]=await Promise.all([db.collection("students").doc(me.k).get(),loadSet(),db.collection("questions").doc(k).get()]);
+  const o=(ST.sch||{})[k]||{},now=Date.now();
+  if(await sha(k+"|"+$("pin").value.trim())!==((ST.pinh||{})[k]||paper.h))m.textContent="Wrong PIN for "+paper.n+". Check and try again.";
+  else if(!st.exists||!st.data().active){$("ov").classList.add("hide");const w=me;clearSession();show("login");inactive(w.u,w.n)}
+  else if(o.on===false||(o.from&&now<o.from)||(o.to&&now>o.to))m.textContent=paper.n+" is not open right now."+(o.from&&now<o.from?" It opens "+new Date(o.from).toLocaleString()+".":"");
+  else{
+   const bank=(BANK[k]||[]).concat(qd.exists?qd.data().items:[]);
+   if(!bank.length)return m.textContent="Questions for "+paper.n+" are not available yet.";
+   const c=await db.collection("config").doc(k).get(),cd=c.exists?c.data():null;
+   let ids=cd?cd.ids.filter(i=>bank.some(q=>q.id===i)):[];if(!ids.length)ids=bank.map(q=>q.id);
+   ids=shuffle(ids.slice(0,TOTAL),rng(seedOf(me.k+k+(cd?cd.v:0))));
+   const mm={};ids.forEach(i=>mm[i]=bank.find(q=>q.id===i));
+   S={k,ids,a:{},f:{},i:0,t:Date.now(),d:((ST.dur||{})[k]||SECS/60)*60,m:mm};save();$("ov").classList.add("hide");room();
+  }
+ }catch(e){m.textContent="Network problem. Try again."}finally{$("mgo").disabled=false}
+}
+
+/* ---------- exam room ---------- */
+const save=()=>localStorage.cbt_s=JSON.stringify(S);
+const qOf=id=>S.m[id];
+const left=()=>Math.max(0,S.d-Math.floor((Date.now()-S.t)/1000));
+function tick(){
+ const l=left(),el=$("tm");
+ el.textContent=[Math.floor(l/3600),Math.floor(l%3600/60),l%60].map(x=>String(x).padStart(2,"0")).join(":");
+ el.classList.toggle("low",l<600);
+ if(l>0&&l<=600&&!S.w1){S.w1=1;save();toast(Math.ceil(l/60)+" minutes left")}
+ if(l>0&&l<=300&&!S.w2){S.w2=1;save();toast(Math.ceil(l/60)+" minute(s) left. Submit soon.")}
+ if(l<=0){clearInterval(tmr);finish(true)}
+}
+function room(){S.f=S.f||{};show("room");$("rName").textContent=me.n;clearInterval(tmr);draw();tick();tmr=setInterval(tick,1000)}
+function go(i){if(i<0||i>=S.ids.length)return;S.i=i;save();draw();scrollTo(0,0)}
+function pick(l){const id=S.ids[S.i];if(L.indexOf(l)>=qOf(id).o.length)return;S.a[id]=l;save();draw()}
+function draw(){
+ const n=S.ids.length,id=S.ids[S.i],q=qOf(id),done=Object.keys(S.a).length;
+ $("cA").textContent=done;$("cR").textContent=n-done;$("cT").textContent=n;
+ $("qn").textContent="Question "+(S.i+1)+" of "+n;$("flag").textContent=S.f[id]?"⚑ Flagged":"⚑ Flag";$("qt").textContent=q.q;
+ $("opts").innerHTML=q.o.map((o,j)=>'<button class="opt '+(S.a[id]===L[j]?"sel":"")+'" data-l="'+L[j]+'"><b>'+L[j]+'.</b> '+esc(o)+'</button>').join("");
+ document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(b.dataset.l));
+ $("dots").innerHTML=S.ids.map((x,j)=>'<button class="dot '+(S.a[x]?"ans":"")+' '+(j===S.i?"cur":"")+(S.f[x]?" flg":"")+'" data-j="'+j+'">'+(j+1)+'</button>').join("");
+ document.querySelectorAll(".dot").forEach(b=>b.onclick=()=>go(+b.dataset.j));
+}
+$("pv").onclick=()=>go(S.i-1);$("nx").onclick=()=>go(S.i+1);
+document.addEventListener("keydown",e=>{if($("room").classList.contains("hide")||!S||!$("ov3").classList.contains("hide"))return;const k=e.key.toUpperCase();if(k.length===1&&"ABCD".includes(k))pick(k);else if(k==="N")go(S.i+1);else if(k==="P")go(S.i-1)});
+$("flag").onclick=()=>{const id=S.ids[S.i];if(S.f[id])delete S.f[id];else S.f[id]=1;save();draw()};
+$("submit").onclick=()=>{const n=S.ids.length,u=n-Object.keys(S.a).length,ix=f=>S.ids.map((x,j)=>f(x)?'<button class="chip" data-j="'+j+'">'+(j+1)+'</button>':"").join("")||"<i>none</i>";
+ $("ov3b").innerHTML='<h3>Review before submitting</h3><p>Answered <b>'+(n-u)+'</b> of '+n+'</p><p><b>Unanswered</b> (tap a number to go there)</p><div class="chips">'+ix(x=>!S.a[x])+'</div><p><b>Flagged for review</b></p><div class="chips">'+ix(x=>S.f[x])+'</div>';
+ $("ov3").classList.remove("hide");document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{$("ov3").classList.add("hide");go(+b.dataset.j)})};
+$("ov3k").onclick=()=>$("ov3").classList.add("hide");$("ov3s").onclick=()=>{$("ov3").classList.add("hide");finish(false)};
+const pend=r=>{const p=JSON.parse(localStorage.cbt_p||"[]");p.push(r);localStorage.cbt_p=JSON.stringify(p)};
+async function saveRes(r){
+ const h=db.collection("history").doc(r.k),d=await h.get(),it=d.exists?d.data().items:[];
+ if(!it.some(x=>x.t===r.t)){it.push({paper:r.paper,score:r.score,total:r.total,auto:r.auto,t:r.t});await h.set({items:it})}
+ try{await db.collection("results").doc(r.k+"_"+r.t).set({...r,at:firebase.firestore.FieldValue.serverTimestamp()})}catch(e){if(e.code!=="permission-denied")throw e}
+}
+async function retryPending(){const p=JSON.parse(localStorage.cbt_p||"[]"),rest=[];for(const r of p){try{await saveRes(r)}catch(e){rest.push(r)}}
+ if(rest.length)localStorage.cbt_p=JSON.stringify(rest);else localStorage.removeItem("cbt_p");return !rest.length}
+async function finish(auto){
+ clearInterval(tmr);if(!S)return;
+ const pk=PAPERS.find(p=>p.k===S.k),rows=S.ids.map((id,i)=>({i,id,q:qOf(id),p:S.a[id]})),ok=rows.filter(r=>r.p===r.q.a).length,total=rows.length;
+ const rec={k:me.k,u:me.u,n:me.n,paper:pk.k,score:ok,total,auto:!!auto,t:Date.now(),ids:S.ids,miss:rows.filter(r=>r.p!==r.q.a).map(r=>r.id)};
+ localStorage.removeItem("cbt_s");S=null;REV={rows};
+ let saved=true;try{await saveRes(rec)}catch(e){saved=false;pend(rec)}
+ show("rev");$("revT").textContent=(auto?"Time up, exam submitted · ":"Exam submitted · ")+pk.n;
+ $("revS").textContent=ok+" / "+total;$("revI").textContent=Math.round(ok/total*100)+"% · "+(total-ok)+" missed"+(saved?"":" · Not saved online yet");
+ $("revRetry").classList.toggle("hide",saved);drawRev("a");scrollTo(0,0);
+}
+function drawRev(f){$("tgA").classList.toggle("on",f==="a");$("tgM").classList.toggle("on",f==="m");
+ $("revL").innerHTML=REV.rows.filter(r=>f==="a"||r.p!==r.q.a).map(r=>{const c=r.p===r.q.a;return '<div class="rvc '+(c?"good":r.p?"bad":"skip")+'"><div class="st">Question '+(r.i+1)+' · '+(c?"Correct":r.p?"Incorrect":"Not answered")+'</div><div class="rq">'+esc(r.q.q)+'</div>'+
+  r.q.o.map((o,j)=>{const a=L[j]===r.q.a,w=L[j]===r.p&&!a;return '<div class="ro '+(a?"cor":w?"wr":"")+'"><b>'+L[j]+'.</b> '+esc(o)+(a?'<i style="color:#178a3a">✓ Correct answer</i>':w?'<i style="color:#be123c">✗ Your answer</i>':"")+'</div>'}).join("")+
+  '<div class="why"><b>Explanation:</b> '+esc(r.q.e||"Explanation coming soon.")+'</div></div>'}).join("")||'<div class="revh">Perfect score. No missed questions.</div>'}
+$("tgA").onclick=()=>drawRev("a");$("tgM").onclick=()=>drawRev("m");
+$("revRetry").onclick=async()=>{if(await retryPending()){$("revRetry").classList.add("hide");$("revI").textContent=$("revI").textContent.replace(" · Not saved online yet"," · Saved");toast("Result saved")}else toast("Still no connection. Try again.")};
+$("revBack").onclick=enter;
+async function myRes(){view("res");$("reslist").innerHTML='<p style="padding:12px">Loading…</p>';
+ let it=[];try{const d=await db.collection("history").doc(me.k).get();it=d.exists?d.data().items:[]}catch(e){}
+ it=it.concat(JSON.parse(localStorage.cbt_p||"[]").filter(r=>r.k===me.k&&!it.some(x=>x.t===r.t)).map(r=>({...r,p:1}))).sort((a,b)=>b.t-a.t);
+ $("reslist").innerHTML=it.length?'<table class="at"><tr><th>Paper</th><th>Score</th><th>%</th><th>Date</th></tr>'+it.map(x=>'<tr><td>'+(PAPERS.find(p=>p.k===x.paper)||{n:x.paper}).n+'</td><td>'+x.score+'/'+x.total+(x.auto?" (time up)":"")+'</td><td>'+Math.round(x.score/x.total*100)+'%</td><td>'+new Date(x.t).toLocaleString()+(x.p?" · not saved online yet":"")+'</td></tr>').join("")+'</table>':'<p style="padding:12px">No attempts yet. Take a paper from <b>Objective Questions</b> and your scores will show here.</p>'}
+$("goRes").onclick=myRes;
+
+/* ---------- admin ---------- */
+const NAV='<nav><div class="brand">Nsam Technologies<small>ADMIN</small></div><div class="nl"><a id="aRf">Refresh</a><a class="lo" id="aLo">Logout</a></div></nav>';
+function adminLogin(m=""){
+ show("admin");$("admin").innerHTML='<div class="ac" style="max-width:360px;margin-top:60px"><h2>Admin login</h2><input id="ae" type="email" placeholder="Email"><input id="ap" type="password" placeholder="Password"><button class="ab" id="ag" style="width:100%;margin-top:8px">Login</button><p style="color:#be123c;font-size:12px;margin-top:8px">'+m+'</p></div>';
+ $("ag").onclick=async()=>{try{await auth.signInWithEmailAndPassword($("ae").value.trim(),$("ap").value)}catch(e){adminLogin("Wrong email or password.")}};
+}
+async function dash(){
+ show("admin");$("admin").innerHTML='<div class="ac">Loading…</div>';
+ try{
+  const [st,se,lo,re,cf,sg,qs]=await Promise.all(["students","secrets","logins","results","config","settings","questions"].map(c=>db.collection(c).get()));
+  A={st:st.docs.map(d=>({k:d.id,...d.data()})).sort((a,b)=>a.username.localeCompare(b.username)),pw:{},lg:{},rs:{},cfg:{}};
+  A.pn={};A.set={};A.qx={};sg.forEach(d=>{if(d.id==="main")A.set=d.data()});qs.forEach(d=>A.qx[d.id]=d.data().items||[]);se.forEach(d=>{if(d.id==="pins")A.pn=d.data();else A.pw[d.id]=d.data().password});cf.forEach(d=>A.cfg[d.id]=d.data());
+  lo.forEach(d=>(A.lg[d.data().k]??=[]).push(d.data()));re.forEach(d=>(A.rs[d.data().k]??=[]).push(d.data()));
+  [A.lg,A.rs].forEach(o=>Object.values(o).forEach(a=>a.sort((p,q)=>(q.at?.seconds||9e9)-(p.at?.seconds||9e9))));
+  adminView();
+ }catch(e){$("admin").innerHTML=NAV+'<div class="ac"><p style="color:#be123c">Could not load: '+esc(e.message)+'</p></div>';$("aLo").onclick=()=>auth.signOut();$("aRf").onclick=dash}
+}
+const row=s=>{const g=A.lg[s.k]||[],r=A.rs[s.k]||[];
+ return '<details class="arow"><summary><span><b>'+esc(s.name)+'</b><small>'+esc(s.username)+'</small></span><span class="asm">Logins '+g.length+' · Exams '+r.length+'</span><label class="sw" onclick="event.stopPropagation()"><input type="checkbox" data-k="'+s.k+'" '+(s.active?"checked":"")+'><i></i></label></summary><div class="adt"><p>Password: <b>'+esc(A.pw[s.k]||"?")+'</b></p><p>Last login: '+(g.length?fmt(g[0].at):"never")+'</p>'+
+ (r.length?'<table><tr><th>Paper</th><th>Score</th><th>When</th></tr>'+r.map(x=>{const p=PAPERS.find(y=>y.k===x.paper);return '<tr><td>'+(p?p.n:x.paper)+'</td><td>'+x.score+'/'+x.total+(x.auto?" (auto)":"")+'</td><td>'+fmt(x.at)+'</td></tr>'}).join("")+'</table>':'<p class="asm">No exam taken yet.</p>')+'<div class="atop" style="margin-top:8px"><input data-np="'+s.k+'" placeholder="New password" style="max-width:150px"><button class="ab s" data-cp="'+s.k+'">Change password</button><button class="ab s" data-del="'+s.k+'" style="color:#be123c">Delete student</button></div></div></details>'};
+function list(){const f=$("q").value.trim().toLowerCase();$("ls").innerHTML=A.st.filter(s=>!f||(s.username+" "+s.name).toLowerCase().includes(f)).map(row).join("")||'<p class="asm">No match.</p>'}
+function adminView(){
+ const sum=o=>Object.values(o).reduce((n,a)=>n+a.length,0);
+ $("admin").innerHTML=NAV+'<div class="ac"><div class="astats"><div><b>'+A.st.length+'</b>Students</div><div><b>'+A.st.filter(s=>s.active).length+'</b>Active</div><div><b>'+sum(A.lg)+'</b>Logins</div><div><b>'+sum(A.rs)+'</b>Exams taken</div></div></div>'+
+ resCard()+setCard()+'<div class="ac"><h2>Question sets</h2>'+PAPERS.map(p=>{const c=A.cfg[p.k];return '<div class="pcard"><b>'+p.n+'</b><span>Bank: '+((BANK[p.k]||[]).length+(A.qx[p.k]||[]).length)+' questions · Current set: '+(c?c.ids.length+" questions, set "+new Date(c.v).toLocaleString():"not randomized yet (students get the whole bank)")+'</span><button class="ab" data-r="'+p.k+'">Randomize '+TOTAL+' questions</button></div>'}).join("")+'</div>'+
+ '<div class="ac"><h2>Students</h2><input id="q" type="text" placeholder="Search by username or name"><div class="atop"><button class="ab s" id="aa">Activate all</button><button class="ab s" id="da">Deactivate all</button></div><div id="ls"></div></div>'+
+ qCard()+anCard()+addCard()+'<div class="ac"><details><summary><b>Import students</b></summary><p class="asm" style="margin:8px 0">One per line: username,password,name. Importing a username again replaces it.</p><textarea id="csv" rows="6"></textarea><label class="asm"><input type="checkbox" id="act" checked> Activate on import</label><br><br><button class="ab" id="im">Import</button></details></div>';
+ xBind();list();$("q").oninput=list;$("aRf").onclick=dash;$("aLo").onclick=()=>auth.signOut();
+ $("ls").onchange=toggle;document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>rand(b.dataset.r));
+ $("aa").onclick=()=>all(true);$("da").onclick=()=>all(false);$("im").onclick=imp;
+}
+function toggle(e){
+ const c=e.target,s=A.st.find(x=>x.k===c.dataset.k);if(!s)return;s.active=c.checked;
+ db.collection("students").doc(s.k).update({active:c.checked}).catch(()=>{alert("Could not save. Check your internet.");c.checked=!c.checked;s.active=c.checked});
+}
+async function all(v){
+ if(!confirm((v?"Activate":"Deactivate")+" ALL students?"))return;
+ for(let i=0;i<A.st.length;i+=400){const b=db.batch();A.st.slice(i,i+400).forEach(s=>b.update(db.collection("students").doc(s.k),{active:v}));await b.commit()}
+ dash();
+}
+async function rand(k){
+ const b=(BANK[k]||[]).concat(A.qx[k]||[]),p=PAPERS.find(x=>x.k===k);if(!b.length)return alert("No questions in the bank for "+p.n+" yet.");
+ const ids=shuffle(b.map(q=>q.id)).slice(0,TOTAL);
+ await db.collection("config").doc(k).set({ids,v:Date.now()});alert(p.n+": new set of "+ids.length+" questions saved.");dash();
+}
+async function imp(){
+ const lines=$("csv").value.split("\n").map(x=>x.trim()).filter(x=>x&&!/^username/i.test(x)),act=$("act").checked;let n=0;
+ for(let i=0;i<lines.length;i+=150){
+  const b=db.batch();
+  for(const l of lines.slice(i,i+150)){
+   const [u,p,...r]=l.split(",");if(!u||!p)continue;const k=key(u);
+   b.set(db.collection("students").doc(k),{username:u.trim().toUpperCase(),name:r.join(",").trim()||u.trim(),h:await hp(u,p),active:act});
+   b.set(db.collection("secrets").doc(k),{password:p.trim().toUpperCase()});n++;
+  }
+  await b.commit();
+ }
+ alert(n+" students imported.");dash();
+}
+/* ---------- admin extras ---------- */
+const pn=k=>(PAPERS.find(p=>p.k===k)||{n:k}).n,dtl=ms=>ms?new Date(ms-new Date(ms).getTimezoneOffset()*6e4).toISOString().slice(0,16):"";
+const flat=()=>Object.values(A.rs).flat().sort((a,b)=>(b.at?.seconds||9e9)-(a.at?.seconds||9e9)),pc=r=>Math.round(r.score/r.total*100);
+const resCard=()=>'<div class="ac"><h2>Results</h2><div class="atop"><select id="rf"><option value="">All papers</option>'+PAPERS.map(p=>'<option value="'+p.k+'">'+p.n+'</option>').join("")+'</select><label class="asm">Pass mark % <input id="rm" type="number" value="50" style="width:70px"></label><button class="ab s" id="rx">Download CSV (opens in Excel)</button></div><p class="asm" id="rs"></p><div style="overflow:auto;max-height:420px" id="rt"></div></div>';
+function drawRes(){const f=$("rf").value,pm=+$("rm").value||50;RS=flat().filter(r=>!f||r.paper===f);
+ const avg=RS.length?Math.round(RS.reduce((n,r)=>n+pc(r),0)/RS.length):0,ps=RS.filter(r=>pc(r)>=pm).length;
+ $("rs").textContent=RS.length+" attempts · average "+avg+"% · pass rate "+(RS.length?Math.round(ps/RS.length*100):0)+"% (pass mark "+pm+"%)";
+ $("rt").innerHTML=RS.length?'<table class="at"><tr><th>Name</th><th>Username</th><th>Paper</th><th>Score</th><th>When</th></tr>'+RS.slice(0,300).map(r=>'<tr><td>'+esc(r.n)+'</td><td>'+esc(r.u)+'</td><td>'+pn(r.paper)+'</td><td>'+r.score+'/'+r.total+' ('+pc(r)+'%)</td><td>'+fmt(r.at)+'</td></tr>').join("")+'</table>':'<p class="asm">No results yet.</p>'}
+function exportCsv(){const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"',l=[["Name","Username","Paper","Score","Total","Percent","Date"].map(q).join(",")].concat(RS.map(r=>[r.n,r.u,pn(r.paper),r.score,r.total,pc(r),fmt(r.at)].map(q).join(",")));
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+l.join("\n")],{type:"text/csv"}));a.download="results.csv";a.click()}
+const setCard=()=>{const s=A.set||{},d=s.dur||{},c=s.sch||{};return '<div class="ac"><h2>Paper settings</h2><p class="asm">PIN, time allowed and opening window for each paper. Leave the PIN blank to keep the current one.</p>'+PAPERS.map(p=>{const o=c[p.k]||{};return '<div class="pcard"><b>'+p.n+'</b><span>Current PIN: <b>'+esc(A.pn[p.k]||"default")+'</b></span><div class="atop"><input data-pin="'+p.k+'" placeholder="New PIN" inputmode="numeric" style="max-width:110px"><label class="asm">Minutes <input data-dur="'+p.k+'" type="number" value="'+(d[p.k]||SECS/60)+'" style="width:80px"></label><label class="asm"><input data-on="'+p.k+'" type="checkbox" '+(o.on===false?"":"checked")+'> Open</label></div><div class="atop"><label class="asm">From <input data-from="'+p.k+'" type="datetime-local" value="'+dtl(o.from)+'"></label><label class="asm">Until <input data-to="'+p.k+'" type="datetime-local" value="'+dtl(o.to)+'"></label></div></div>'}).join("")+'<label class="asm">Announcement shown to students after login</label><input id="ban" value="'+esc(s.banner||"")+'" placeholder="e.g. Paper I holds on Monday 9am"><br><br><button class="ab" id="sv">Save settings</button></div>'};
+async function saveSet(){
+ const s={pinh:{...((A.set||{}).pinh||{})},dur:{},sch:{}},pw={...A.pn};
+ for(const p of PAPERS){const g=a=>document.querySelector("["+a+'="'+p.k+'"]'),v=g("data-pin").value.trim();
+  if(v){if(!/^\d{3,6}$/.test(v))return alert("PIN for "+p.n+" must be 3 to 6 digits.");s.pinh[p.k]=await sha(p.k+"|"+v);pw[p.k]=v}
+  s.dur[p.k]=+g("data-dur").value||SECS/60;const f=g("data-from").value,t=g("data-to").value;s.sch[p.k]={on:g("data-on").checked,from:f?+new Date(f):0,to:t?+new Date(t):0}}
+ s.banner=$("ban").value.trim();
+ try{await db.collection("settings").doc("main").set(s);await db.collection("secrets").doc("pins").set(pw);alert("Settings saved.");dash()}catch(e){alert("Could not save: "+e.message)}
+}
+const qCard=()=>'<div class="ac"><h2>Import questions</h2><p class="asm">One question per line: question,A,B,C,D,correct letter,explanation. Put text that contains commas inside "double quotes". A header line is optional. Imported so far: '+PAPERS.map(p=>p.n+" "+(A.qx[p.k]||[]).length).join(" · ")+'</p><select id="qp">'+PAPERS.map(p=>'<option value="'+p.k+'">'+p.n+'</option>').join("")+'</select><textarea id="qb" rows="6"></textarea><div class="atop"><button class="ab" id="qi">Import questions</button><button class="ab s" id="qc">Remove imported questions for this paper</button></div></div>';
+function csvParse(t){const r=[];let w=[],c="",q=false;for(let i=0;i<t.length;i++){const h=t[i];if(q){if(h=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=h}else if(h=='"')q=true;else if(h==","){w.push(c);c=""}else if(h=="\n"||h=="\r"){if(h=="\r"&&t[i+1]=="\n")i++;w.push(c);c="";r.push(w);w=[]}else c+=h}w.push(c);r.push(w);return r.filter(x=>x.some(y=>y.trim()))}
+async function impQ(){
+ const k=$("qp").value,rows=csvParse($("qb").value).filter(r=>!/^question$/i.test(r[0].trim())),add=[],bad=[],t=Date.now().toString(36);
+ rows.forEach((r,i)=>{const [q,a,b,c,d,an,...e]=r.map(x=>x.trim()),o=[a,b,c,d];while(o.length&&!o[o.length-1])o.pop();const A2=(an||"").toUpperCase();
+  if(!q||o.length<2||o.some(x=>!x)||!"ABCD".includes(A2)||A2.length!==1||"ABCD".indexOf(A2)>=o.length)bad.push(i+1);else add.push({id:"x"+t+i,q,o,a:A2,e:e.join(",")})});
+ if(!rows.length)return alert("Paste some questions first.");
+ if(bad.length)return alert("Nothing imported. Check these lines: "+bad.join(", "));
+ const items=(A.qx[k]||[]).concat(add);if(JSON.stringify(items).length>900000)return alert("Too many imported questions for one paper.");
+ try{await db.collection("questions").doc(k).set({items});alert(add.length+" questions imported into "+pn(k)+".");dash()}catch(e){alert("Could not save: "+e.message)}
+}
+async function clrQ(){const k=$("qp").value;if(!confirm("Remove all imported questions for "+pn(k)+"?"))return;await db.collection("questions").doc(k).delete();dash()}
+const anCard=()=>{const t={};flat().forEach(r=>{(r.ids||[]).forEach(i=>{(t[r.paper+"|"+i]??={n:0,m:0}).n++});(r.miss||[]).forEach(i=>{(t[r.paper+"|"+i]??={n:0,m:0}).m++})});
+ const rows=Object.entries(t).filter(([,v])=>v.n>=2).sort((a,b)=>b[1].m/b[1].n-a[1].m/a[1].n).slice(0,15),txt=key=>{const [p,i]=key.split("|"),q=(BANK[p]||[]).concat(A.qx[p]||[]).find(x=>String(x.id)===i);return q?q.q:"(question "+i+")"};
+ return '<div class="ac"><h2>Most missed questions</h2>'+(rows.length?'<table class="at"><tr><th>Question</th><th>Paper</th><th>Missed</th></tr>'+rows.map(([k,v])=>'<tr><td>'+esc(txt(k).slice(0,140))+'</td><td>'+pn(k.split("|")[0])+'</td><td>'+Math.round(v.m/v.n*100)+'% of '+v.n+'</td></tr>').join("")+'</table>':'<p class="asm">Not enough data yet. This fills in once at least 2 students have taken the same question.</p>')+'</div>'};
+const addCard=()=>'<div class="ac"><h2>Add one student</h2><div class="atop"><input id="nu" placeholder="Username e.g. DOM/3Y1S/95" style="max-width:220px"><input id="np" placeholder="Password" style="max-width:120px"><input id="nn" placeholder="Full name"><button class="ab" id="na">Add student</button></div></div>';
+function xBind(){$("rf").onchange=drawRes;$("rm").oninput=drawRes;drawRes();$("rx").onclick=exportCsv;$("sv").onclick=saveSet;$("qi").onclick=impQ;$("qc").onclick=clrQ;
+ $("na").onclick=()=>{const u=$("nu").value.trim(),p=$("np").value.trim(),n=$("nn").value.trim().replace(/,/g," ");if(!u||!p||!n)return alert("Fill in username, password and name.");$("csv").value=u+","+p+","+n;$("act").checked=true;imp()};
+ $("ls").onclick=async e=>{const b=e.target.closest("[data-cp],[data-del]");if(!b)return;const k=b.dataset.cp||b.dataset.del,s=A.st.find(x=>x.k===k);
+  try{if(b.dataset.del){if(!confirm("Delete "+s.name+"? Their past results stay in the results list."))return;await db.collection("students").doc(k).delete();await db.collection("secrets").doc(k).delete();dash()}
+  else{const p=document.querySelector('[data-np="'+k+'"]').value.trim();if(!p)return alert("Type the new password first.");await db.collection("students").doc(k).update({h:await hp(s.username,p)});await db.collection("secrets").doc(k).set({password:p.toUpperCase()});alert("Password changed.");dash()}}catch(x){alert("Could not save: "+x.message)}}}
+
+init();
+</script>
+</body>
+</html>
