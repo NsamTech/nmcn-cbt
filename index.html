@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NMCN CBT Practice</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font:15px system-ui,sans-serif;background:#f3f5f8;color:#1c2533}
+.box{background:#fff;max-width:760px;margin:14px auto;padding:18px;border-radius:12px;box-shadow:0 1px 5px #0001}
+h1{font-size:20px;color:#1a8f3c;margin:0 0 10px}h2{font-size:16px;line-height:1.5;margin:6px 0 12px}
+input:not([type=radio]):not([type=checkbox]){width:100%;padding:11px;margin:6px 0;border:1px solid #cfd6df;border-radius:8px;font-size:15px}
+button,.btn{display:inline-block;background:#22b24c;color:#fff;border:0;border-radius:8px;padding:11px 16px;font-weight:600;cursor:pointer;text-decoration:none;font-size:14px}
+button.sec{background:#e6ebf2;color:#1c2533}button:disabled{opacity:.4}
+.m{color:#6b7686;font-size:13px}.err{color:#d32f4f;font-size:13px}.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0}
+.card{display:grid;gap:6px;border:1px solid #e1e6ed;border-radius:10px;padding:12px;margin:10px 0}
+.bar{position:sticky;top:0;z-index:5;background:#1a8f3c;color:#fff;display:flex;justify-content:space-between;padding:10px 14px}.tm{font-weight:700;font-variant-numeric:tabular-nums}
+.opt{display:block;border:1px solid #d9dfe7;border-radius:8px;padding:11px;margin:8px 0;cursor:pointer;line-height:1.4}.opt.on{border-color:#22b24c;background:#eaf8ee}
+.nav{display:flex;justify-content:space-between;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:6px;margin:10px 0}.g{background:#e6ebf2;color:#1c2533;padding:8px 0}.g.d{background:#bfe9cc}.g.c{outline:2px solid #1a8f3c}
+.fin{width:100%;margin-top:10px;background:#c62828}.big{font-size:34px;font-weight:800;color:#1a8f3c}
+.rv{border-left:4px solid #d32f4f;background:#fafbfc;padding:10px 12px;margin:12px 0;border-radius:6px;font-size:14px}.bad{color:#c62828}.good{color:#178a3a}.ex{background:#eef2f7;padding:8px;border-radius:6px;font-size:13px}
+.st{border:1px solid #e1e6ed;border-radius:8px;margin:8px 0}.st summary{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px;cursor:pointer;list-style:none}.st small{display:block;color:#6b7686}.sm{font-size:12px;color:#6b7686}
+.dt{padding:0 10px 10px;font-size:13px}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #eee;padding:5px;text-align:left}
+.sw input{display:none}.sw i{display:block;width:44px;height:24px;border-radius:12px;background:#c5ccd6;position:relative}.sw i:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.15s}.sw input:checked+i{background:#22b24c}.sw input:checked+i:after{left:23px}
+.stats{display:flex;gap:8px;flex-wrap:wrap}.stats div{flex:1;min-width:90px;background:#f1f4f9;padding:8px;border-radius:8px;text-align:center;font-size:12px}.stats b{display:block;font-size:18px}
+</style></head><body><div id="app"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="bank.js"></script>
+<script>
+/* ===== Firebase config (filled in) ===== */
+const FB={apiKey:"AIzaSyBPJUYDeCqBjrOLKToqacNEyy0-IMzBkBA",authDomain:"n-sam-nmcn-cbt-quest.firebaseapp.com",projectId:"n-sam-nmcn-cbt-quest",storageBucket:"n-sam-nmcn-cbt-quest.firebasestorage.app",messagingSenderId:"903051215543",appId:"1:903051215543:web:8497b2bb0ded6da6710332"};
+/* ===== settings ===== */
+const WA="2347081064223",TOTAL=250,SECS=10800,L=["A","B","C","D"];
+const PAPERS={paper1:{n:"Paper I",pin:"100"},paper2:{n:"Paper II",pin:"102"},paper3:{n:"Paper III",pin:"103"}};
+const BANK=window.BANK||{};
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const set=(h,keep)=>{$("app").innerHTML=h;if(!keep)scrollTo(0,0)};
+const key=u=>u.trim().toUpperCase().replace(/\//g,"_");
+const sha=async s=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,"0")).join("");
+const hp=(u,p)=>sha(key(u)+"|"+p.trim().toUpperCase());
+const rng=s=>{let a=s>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
+const seedOf=s=>{let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0};
+const shuffle=(x,r=Math.random)=>{const a=[...x];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const waLink=u=>`https://wa.me/${WA}?text=`+encodeURIComponent(`Hello Admin N Sam, please activate my CBT account. Username: ${u}`);
+const fmt=t=>t&&t.toDate?t.toDate().toLocaleString():"-";
+let db,auth,user=null,S=null,tmr=null,A={};
+
+function init(){
+ if(FB.apiKey.startsWith("PASTE"))return set(`<div class=box><h1>Setup needed</h1><p>Paste your Firebase config into index.html (see README.md).</p></div>`);
+ firebase.initializeApp(FB);db=firebase.firestore();auth=firebase.auth();
+ auth.onAuthStateChanged(u=>{if(location.hash==="#admin")u?dash():adminLogin()});
+ addEventListener("hashchange",route);route();
+}
+function route(){
+ if(location.hash==="#admin")return auth.currentUser?dash():adminLogin();
+ clearInterval(tmr);
+ if(localStorage.cbt_u){user=JSON.parse(localStorage.cbt_u);if(localStorage.cbt_s){S=JSON.parse(localStorage.cbt_s);return exam()}return papers()}
+ loginView();
+}
+
+/* ---------- student: login ---------- */
+function loginView(msg=""){
+ set(`<div class=box><h1>CBT Exam Login</h1><p class=m>Enter the username and password given to you.</p><input id=u placeholder="Username e.g. DOM/3Y1S/01" autocapitalize=characters><input id=p type=password placeholder=Password><button id=go>Login</button><p class=err>${msg}</p></div>`);
+ $("go").onclick=login;$("p").onkeydown=e=>e.key==="Enter"&&login();
+}
+async function login(){
+ const u=$("u").value.trim(),p=$("p").value;if(!u||!p)return loginView("Enter username and password.");
+ $("go").disabled=true;$("go").textContent="Checking…";
+ try{
+  const d=await db.collection("students").doc(key(u)).get(),s=d.data();
+  if(!d.exists||s.h!==await hp(u,p))return loginView("Wrong username or password.");
+  if(!s.active)return inactive(s.username,s.name);
+  user={k:key(u),u:s.username,n:s.name};localStorage.cbt_u=JSON.stringify(user);
+  db.collection("logins").add({k:user.k,u:user.u,n:user.n,at:firebase.firestore.FieldValue.serverTimestamp()});
+  papers();
+ }catch(e){loginView("Network problem. Check your internet and try again.")}
+}
+function inactive(u,n){
+ set(`<div class=box><h1>Account not active</h1><p>Hello ${esc(n)}, your account has not been activated.</p><p><b>Contact Admin N Sam on WhatsApp - +2347081064223</b></p><p><a class=btn href="${waLink(u)}" target=_blank rel=noopener>Chat with Admin on WhatsApp</a></p><button class=sec id=bk>Back to login</button></div>`);
+ $("bk").onclick=()=>{localStorage.removeItem("cbt_u");loginView()};
+}
+
+/* ---------- student: choose paper ---------- */
+function papers(){
+ set(`<div class=box><div class=top><b>${esc(user.n)}</b><button class=sec id=out>Logout</button></div><h1>Choose a paper</h1>`+
+ Object.entries(PAPERS).map(([k,p])=>`<div class=card><b>${p.n}</b><span class=m>${TOTAL} questions · 3 hours</span><input id=pin_${k} placeholder="Enter PIN" inputmode=numeric><button data-k=${k}>Start ${p.n}</button></div>`).join("")+`<p class=err id=e></p></div>`);
+ $("out").onclick=()=>{localStorage.removeItem("cbt_u");localStorage.removeItem("cbt_s");user=null;loginView()};
+ document.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>start(b.dataset.k));
+}
+async function start(k){
+ const err=m=>$("e").textContent=m,bank=BANK[k]||[];
+ if($("pin_"+k).value.trim()!==PAPERS[k].pin)return err("Wrong PIN for "+PAPERS[k].n+".");
+ if(!bank.length)return err("Questions for "+PAPERS[k].n+" are not available yet.");
+ try{
+  const st=await db.collection("students").doc(user.k).get();
+  if(!st.exists||!st.data().active)return inactive(user.u,user.n);
+  const c=await db.collection("config").doc(k).get(),cd=c.exists?c.data():null;
+  let ids=cd?cd.ids.filter(i=>bank.some(q=>q.id===i)):[];
+  if(!ids.length)ids=bank.map(q=>q.id);
+  ids=shuffle(ids.slice(0,TOTAL),rng(seedOf(user.k+k+(cd?cd.v:0))));
+  S={k,ids,a:{},i:0,t:Date.now()};save();exam();
+ }catch(e){err("Network problem. Try again.")}
+}
+
+/* ---------- student: exam ---------- */
+const save=()=>localStorage.cbt_s=JSON.stringify(S);
+const qOf=id=>BANK[S.k].find(q=>q.id===id);
+const left=()=>Math.max(0,SECS-Math.floor((Date.now()-S.t)/1000));
+function tick(){
+ const l=left(),el=$("tm");
+ if(el)el.textContent=[Math.floor(l/3600),Math.floor(l%3600/60),l%60].map(x=>String(x).padStart(2,"0")).join(":");
+ if(l<=0){clearInterval(tmr);finish(true)}
+}
+function exam(){clearInterval(tmr);draw();tmr=setInterval(tick,1000)}
+function draw(keep){
+ const id=S.ids[S.i],q=qOf(id),n=S.ids.length,done=Object.keys(S.a).length;
+ set(`<div class=bar><b>${PAPERS[S.k].n}</b><span id=tm class=tm></span><span>${done}/${n}</span></div><div class=box><p class=m>Question ${S.i+1} of ${n}</p><h2>${esc(q.q)}</h2>`+
+ q.o.map((o,j)=>`<label class="opt ${S.a[id]===L[j]?"on":""}"><input type=radio name=o data-l=${L[j]} ${S.a[id]===L[j]?"checked":""}> <b>${L[j]}.</b> ${esc(o)}</label>`).join("")+
+ `<div class=nav><button class=sec id=pv ${S.i?"":"disabled"}>Previous</button><button id=nx ${S.i<n-1?"":"disabled"}>Next</button></div><details><summary>Question list</summary><div class=grid>`+
+ S.ids.map((x,j)=>`<button class="g ${S.a[x]?"d":""} ${j===S.i?"c":""}" data-j=${j}>${j+1}</button>`).join("")+`</div></details><button class=fin id=fin>Submit exam</button></div>`,keep);
+ document.querySelectorAll("[data-l]").forEach(r=>r.onchange=()=>{S.a[id]=r.dataset.l;save();draw(1)});
+ $("pv").onclick=()=>{S.i--;save();draw()};$("nx").onclick=()=>{S.i++;save();draw()};
+ document.querySelectorAll("[data-j]").forEach(b=>b.onclick=()=>{S.i=+b.dataset.j;save();draw()});
+ $("fin").onclick=()=>{const m=n-Object.keys(S.a).length;if(confirm(m?`You have ${m} unanswered question(s). Submit now?`:"Submit your exam?"))finish(false)};
+ tick();
+}
+async function finish(auto){
+ clearInterval(tmr);if(!S)return;
+ const k=S.k,rows=S.ids.map((id,i)=>({i,q:qOf(id),p:S.a[id]})),ok=rows.filter(r=>r.p===r.q.a).length,total=rows.length,wrong=rows.filter(r=>r.p!==r.q.a);
+ localStorage.removeItem("cbt_s");S=null;let note="";
+ try{await db.collection("results").add({k:user.k,u:user.u,n:user.n,paper:k,score:ok,total,auto:!!auto,at:firebase.firestore.FieldValue.serverTimestamp()})}
+ catch(e){note="<p class=err>Could not save your result online. Take a screenshot of this page.</p>"}
+ set(`<div class=box><h1>${auto?"Time up - exam submitted":"Exam submitted"}</h1><div class=big>${ok} / ${total}</div><p class=m>${Math.round(ok/total*100)}% · ${PAPERS[k].n}</p>${note}<button id=home>Back to papers</button></div><div class=box><h2>Questions you missed (${wrong.length})</h2>`+
+ wrong.map(r=>`<div class=rv><p><b>Q${r.i+1}. ${esc(r.q.q)}</b></p><p class=bad>Your answer: ${r.p?r.p+". "+esc(r.q.o[L.indexOf(r.p)]):"Not answered"}</p><p class=good>Correct answer: ${r.q.a}. ${esc(r.q.o[L.indexOf(r.q.a)])}</p><p class=ex>${esc(r.q.e||"Explanation coming soon.")}</p></div>`).join("")+`</div>`);
+ $("home").onclick=papers;
+}
+
+/* ---------- admin ---------- */
+function adminLogin(m=""){
+ set(`<div class=box><h1>Admin login</h1><input id=ae placeholder=Email><input id=ap type=password placeholder=Password><button id=ag>Login</button><p class=err>${m}</p></div>`);
+ $("ag").onclick=async()=>{try{await auth.signInWithEmailAndPassword($("ae").value.trim(),$("ap").value)}catch(e){adminLogin("Wrong email or password.")}};
+}
+async function dash(){
+ set(`<div class=box>Loading…</div>`);
+ try{
+  const [st,se,lo,re,cf]=await Promise.all(["students","secrets","logins","results","config"].map(c=>db.collection(c).get()));
+  A={st:st.docs.map(d=>({k:d.id,...d.data()})).sort((a,b)=>a.username.localeCompare(b.username)),pw:{},lg:{},rs:{},cfg:{}};
+  se.forEach(d=>A.pw[d.id]=d.data().password);cf.forEach(d=>A.cfg[d.id]=d.data());
+  lo.forEach(d=>(A.lg[d.data().k]??=[]).push(d.data()));re.forEach(d=>(A.rs[d.data().k]??=[]).push(d.data()));
+  [A.lg,A.rs].forEach(o=>Object.values(o).forEach(a=>a.sort((p,q)=>(q.at?.seconds||9e9)-(p.at?.seconds||9e9))));
+  adminView();
+ }catch(e){set(`<div class=box><p class=err>Could not load: ${esc(e.message)}</p><button id=lo2>Logout</button></div>`);$("lo2").onclick=()=>auth.signOut()}
+}
+const row=s=>{const g=A.lg[s.k]||[],r=A.rs[s.k]||[];
+ return `<details class=st><summary><span><b>${esc(s.name)}</b><small>${esc(s.username)}</small></span><span class=sm>Logins ${g.length} · Exams ${r.length}</span><label class=sw onclick="event.stopPropagation()"><input type=checkbox data-k="${s.k}" ${s.active?"checked":""}><i></i></label></summary><div class=dt><p>Password: <b>${esc(A.pw[s.k]||"?")}</b></p><p>Last login: ${g.length?fmt(g[0].at):"never"}</p>`+
+ (r.length?`<table><tr><th>Paper</th><th>Score</th><th>When</th></tr>`+r.map(x=>`<tr><td>${PAPERS[x.paper]?PAPERS[x.paper].n:x.paper}</td><td>${x.score}/${x.total}${x.auto?" (auto)":""}</td><td>${fmt(x.at)}</td></tr>`).join("")+`</table>`:`<p class=m>No exam taken yet.</p>`)+`</div></details>`};
+function list(){const f=$("q").value.trim().toLowerCase();$("ls").innerHTML=A.st.filter(s=>!f||(s.username+" "+s.name).toLowerCase().includes(f)).map(row).join("")||"<p class=m>No match.</p>"}
+function adminView(){
+ const sum=o=>Object.values(o).reduce((n,a)=>n+a.length,0);
+ set(`<div class=box><div class=top><h1>Admin</h1><span><button class=sec id=rf>Refresh</button> <button class=sec id=lo2>Logout</button></span></div><div class=stats><div><b>${A.st.length}</b>Students</div><div><b>${A.st.filter(s=>s.active).length}</b>Active</div><div><b>${sum(A.lg)}</b>Logins</div><div><b>${sum(A.rs)}</b>Exams taken</div></div></div>
+ <div class=box><h2>Question sets</h2>`+Object.entries(PAPERS).map(([k,p])=>{const c=A.cfg[k];return `<div class=card><b>${p.n}</b><span class=m>Bank: ${(BANK[k]||[]).length} questions · Current set: ${c?c.ids.length+" questions, set "+new Date(c.v).toLocaleString():"not randomized yet (students get the whole bank)"}</span><button data-r=${k}>Randomize ${TOTAL} questions</button></div>`}).join("")+`</div>
+ <div class=box><h2>Students</h2><input id=q placeholder="Search by username or name"><div class=top><button class=sec id=aa>Activate all</button><button class=sec id=da>Deactivate all</button></div><div id=ls></div></div>
+ <div class=box><details><summary><b>Import students</b></summary><p class=m>One per line: username,password,name. Importing a username again replaces it.</p><textarea id=csv rows=6 style="width:100%"></textarea><label><input type=checkbox id=act checked> Activate on import</label><br><br><button id=im>Import</button></details></div>`);
+ list();$("q").oninput=list;$("rf").onclick=dash;$("lo2").onclick=()=>auth.signOut();
+ $("ls").onchange=toggle;document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>rand(b.dataset.r));
+ $("aa").onclick=()=>all(true);$("da").onclick=()=>all(false);$("im").onclick=imp;
+}
+function toggle(e){
+ const c=e.target,s=A.st.find(x=>x.k===c.dataset.k);if(!s)return;s.active=c.checked;
+ db.collection("students").doc(s.k).update({active:c.checked}).catch(()=>{alert("Could not save. Check your internet.");c.checked=!c.checked;s.active=c.checked});
+}
+async function all(v){
+ if(!confirm((v?"Activate":"Deactivate")+" ALL students?"))return;
+ for(let i=0;i<A.st.length;i+=400){const b=db.batch();A.st.slice(i,i+400).forEach(s=>b.update(db.collection("students").doc(s.k),{active:v}));await b.commit()}
+ dash();
+}
+async function rand(k){
+ const b=BANK[k]||[];if(!b.length)return alert("No questions in the bank for "+PAPERS[k].n+" yet.");
+ const ids=shuffle(b.map(q=>q.id)).slice(0,TOTAL);
+ await db.collection("config").doc(k).set({ids,v:Date.now()});alert(PAPERS[k].n+": new set of "+ids.length+" questions saved.");dash();
+}
+async function imp(){
+ const lines=$("csv").value.split("\n").map(x=>x.trim()).filter(x=>x&&!/^username/i.test(x)),act=$("act").checked;let n=0;
+ for(let i=0;i<lines.length;i+=150){
+  const b=db.batch();
+  for(const l of lines.slice(i,i+150)){
+   const [u,p,...r]=l.split(",");if(!u||!p)continue;const k=key(u);
+   b.set(db.collection("students").doc(k),{username:u.trim().toUpperCase(),name:r.join(",").trim()||u.trim(),h:await hp(u,p),active:act});
+   b.set(db.collection("secrets").doc(k),{password:p.trim().toUpperCase()});n++;
+  }
+  await b.commit();
+ }
+ alert(n+" students imported.");dash();
+}
+init();
+</script></body></html>
